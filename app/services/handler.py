@@ -9,6 +9,7 @@ channel.queue_declare(queue='online_converter_queue', durable=True)
 
 print('-----Wait-----')
 
+
 def callback(ch, method, properties, body):
     data = json.loads(body)
     print("url: {}".format(data['url']))
@@ -16,9 +17,8 @@ def callback(ch, method, properties, body):
     print('Isfile: {}'.format(data['IsFile']))
     print('format: {}'.format(data['format']))
     print('quality: {}'.format(data['quality']))
-
-
     ch.basic_ack(delivery_tag=method.delivery_tag)
+
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue='online_converter_queue', on_message_callback=callback)

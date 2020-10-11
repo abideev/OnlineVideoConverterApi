@@ -1,0 +1,5 @@
+flask
+pika
+youtube_dl
+flask-restplus
+flask-swagger-ui

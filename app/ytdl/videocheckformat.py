@@ -1,14 +1,16 @@
 from __future__ import unicode_literals
 import youtube_dl
 
+
 def status(d):
     if d['status'] == 'finished':
-        print('Dwonload compleate, convert')
+        print('Download complete, convert')
+
 
 ydl_opts = {
     'format': 'bestvideo+bestaudio/best',        
     'outtmpl': '%(id)s',        
-    'noplaylist' : True,        
+    'noplaylist': True,
     'progress_hooks': [status],  
 }
 
