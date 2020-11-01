@@ -1,0 +1,43 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "Online video converter",
+        "version": "1.0.0",
+        "title": "Online video converter"
+    },
+    "tags": [
+        {
+            "name": "URL converter",
+            "description": "Some description"
+        }
+    ],
+    "paths": {
+        "/api/v1/url-converter": {
+            "post": {
+                "tags": [
+                    "URL converter"
+                ],
+                "summary": "URL converter",
+                "requestBody": {
+                    "description": "Convert video from url",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "URL not found"
+                    }
+                }
+            }
+        }
+    }
+}
