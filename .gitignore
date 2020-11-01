@@ -23,11 +23,13 @@ dist/
 downloads/
 eggs/
 .eggs/
+.idea
 lib/
 lib64/
 parts/
 sdist/
 var/
+__pycache__
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
