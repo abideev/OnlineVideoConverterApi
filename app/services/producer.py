@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask import request
 from flask import abort
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -9,17 +9,19 @@ from werkzeug.utils import secure_filename
 import os
 
 
+abs_path_to_producer = os.path.abspath(os.path.dirname(__file__))
+
 UPLOAD_FOLDER = 'D:\\'
 ALLOWED_EXTENSIONS = {'mp4', 'avi'}
 
 # Config application
 app = Flask(__name__)
+app.config.from_object('config')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 SWAGGER_URL = '/swagger'  # URL for exposing Swagger UI (without trailing '/')
-API_URL = "/swagger.json"  # Our API url (can of course be a local resource)
-
+API_URL = "/static/swagger.json"
 # Call factory function to create our blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
@@ -27,24 +29,9 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     config={  # Swagger UI config overrides
         'app_name': "Online video converter"
     },
-    # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
-    #    'clientId': "your-client-id",
-    #    'clientSecret': "your-client-secret-if-required",
-    #    'realm': "your-realms",
-    #    'appName': "your-app-name",
-    #    'scopeSeparator': " ",
-    #    'additionalQueryStringParams': {'test': "hello"}
-    # }
 )
-
 # Register blueprint at URL
-# (URL must match the one given to factory function above)
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-
-'''
-Next the functions that check if an extension is valid and 
-that uploads the file and redirects the user to the URL for the uploaded file
-'''
 
 
 def allowed_file(filename):
@@ -54,7 +41,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return 'not supported'
+    return jsonify(message="not supported"), 404
 
 
 @app.route("/api/v1/url-converter",  methods=['POST'])
@@ -65,7 +52,9 @@ def url_converter():
     if "url" not in message:
         return json.dumps({'success': False,
                            'message': "url not found"}), 400, {'ContentType': 'application/json',}
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.8.12', port=5672, credentials=pika.credentials.PlainCredentials('rabbitmq', 'rabbitmq'),))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.8.12',
+                                                                   port=5672,
+                                                                   credentials=pika.credentials.PlainCredentials('rabbitmq', 'rabbitmq'),))
     channel = connection.channel()
     channel.queue_declare(queue='online_converter_queue', durable=True)
     channel.basic_publish(
@@ -83,7 +72,9 @@ def url_converter():
 @app.route("/api/v1/file-converter",  methods=['GET', 'POST'])
 def file_converter():
     message = request.get_json()
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.8.12', port=5672, credentials=pika.credentials.PlainCredentials('rabbitmq', 'rabbitmq'),))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.8.12',
+                                                                   port=5672,
+                                                                   credentials=pika.credentials.PlainCredentials('rabbitmq', 'rabbitmq'),))
     channel = connection.channel()
     channel.queue_declare(queue='offline_converter_queue', durable=True)
     channel.basic_publish(
@@ -99,4 +90,5 @@ def file_converter():
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, threaded=True)
+    # app.run(host="0.0.0.0", port=8080, threaded=True)
     # app.run(debug=True)
