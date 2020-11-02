@@ -1,3 +1,5 @@
+import uuid
+import redis
 from flask import Flask, jsonify
 from flask import request
 from flask import abort
@@ -51,7 +53,8 @@ def url_converter():
     message.update(tmpid)
 
     if message is None:
-        abort(400)
+        return json.dumps({'success': False,
+                           'message': "url not found"}), 400, {'ContentType': 'application/json', }
     if "url" not in message:
         return json.dumps({'success': False,
                            'message': "url not found"}), 400, {'ContentType': 'application/json', }
@@ -75,19 +78,24 @@ def url_converter():
 
 @app.route("/api/v1/file-converter", methods=['GET', 'POST'])
 def file_converter():
-    return 'success'
+    return json.dumps({'success': True,
+                       'message': "Success"}), 202, {'ContentType': 'application/json'}
 
 
 @app.route('/api/v1/<status_id>', methods=['GET', 'POST'])
 def status(status_id):
-    r=redis.StrictRedis(host='192.168.8.12', port=6379, db=1)
-    status=r.get(status_id)
-    r.close()
-    if status is None:
-        return "task is not found"
-    else:
-        r.delete(status_id)
-        return status
+    try:
+        r=redis.StrictRedis(host='192.168.8.12', port=6379, db=1)
+        status=r.get(status_id)
+        r.close()
+        if status is None:
+            return json.dumps({'success': False,
+                               'message': "Task not found"}), 404, {'ContentType': 'application/json'}
+        else:
+            r.delete(status_id)
+            return status
+    except Exception:
+        return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
 
 
 @app.route('/download/<file_name>', methods=['GET'])
@@ -97,7 +105,8 @@ def get_image(file_name):
         response.headers["x-suggested-filename"]=file_name
         return response
     except FileNotFoundError:
-        abort(404)
+        return json.dumps({'success': False,
+                           'message': "File not found"}), 404, {'ContentType': 'application/json'}
 
 
 if __name__ == "__main__":
