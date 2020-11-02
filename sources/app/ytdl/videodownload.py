@@ -1,6 +1,6 @@
 import youtube_dl
 import os
-from app.services.uploader import uploader_file
+from sources.app.services.uploader import uploader_file
 
 def youtube_download(url):
     ydl_opts = {'outtmpl': rf'C:\Users\ph03n1x\Documents\Downloads\%(id)s.%(ext)s', }

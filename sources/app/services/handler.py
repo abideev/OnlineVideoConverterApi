@@ -3,10 +3,10 @@ import pika
 import os
 import time
 import redis
-from app.ytdl.videoconvert import ffmpeg_transcode
-from app.services.sender import sender_email
-from app.ytdl.videocheckformat import youtube_parser
-from app.ytdl.videodownload import youtube_download
+from sources.app.ytdl.videoconvert import ffmpeg_transcode
+from sources.app.services.sender import sender_email
+from sources.app.ytdl.videocheckformat import youtube_parser
+from sources.app.ytdl.videodownload import youtube_download
 
 connection=pika.BlockingConnection(pika.ConnectionParameters(host='192.168.8.12', port=5672,
                                                              credentials=pika.credentials.PlainCredentials('rabbitmq',
