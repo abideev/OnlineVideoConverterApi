@@ -2,17 +2,16 @@ import shutil
 import boto3
 from botocore.exceptions import NoCredentialsError
 
-
 ACCESS_KEY = 'XXXXXXXXXXXXXXXXXXXXXXX'
 SECRET_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
 
 def uploader_file(filename):
-  src = rf'C:\Users\ph03n1x\Documents\Downloads\{filename}'
-  outdir = rf'C:\Users\ph03n1x\Documents\123\{filename}'
-  shutil.move(src, outdir)
-  dst_url = (filename)
-  return dst_url
+    src = rf'C:\Users\ph03n1x\Documents\Downloads\{filename}'
+    outdir = rf'C:\Users\ph03n1x\Documents\123\{filename}'
+    shutil.move(src, outdir)
+    dst_url = (filename)
+    return dst_url
 
 
 def upload_to_aws(local_file, bucket, s3_file):
@@ -30,5 +29,4 @@ def upload_to_aws(local_file, bucket, s3_file):
         print("Credentials not available")
         return False
 
-
-#uploaded = upload_to_aws('local_file', 'bucket_name', 's3_file_name')
+# uploaded = upload_to_aws('local_file', 'bucket_name', 's3_file_name')

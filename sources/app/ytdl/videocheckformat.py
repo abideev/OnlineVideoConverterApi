@@ -1,5 +1,6 @@
 import youtube_dl
 
+
 def youtube_parser(url):
     video_format = {'394': {'resolution': '256x144', 'format': '144p', 'extension': 'mp4', 'fps': '30'},
                     '395': {'resolution': '426x240', 'format': '240p', 'extension': 'mp4', 'fps': '30'},
@@ -24,13 +25,13 @@ def youtube_parser(url):
     formats_array = []
     ydl_opts = {}
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-          meta = ydl.extract_info(
-              url, download=False)
-          formats = meta.get('formats', [meta])
-          thumbnails = meta.get('thumbnails', [meta])
+        meta = ydl.extract_info(
+            url, download=False)
+        formats = meta.get('formats', [meta])
+        thumbnails = meta.get('thumbnails', [meta])
     for format in formats:
         for video_tag, data in video_format.items():
-            if video_tag == format['format_id']: # and data["extension"] == "mp4":
+            if video_tag == format['format_id']:  # and data["extension"] == "mp4":
                 if data not in formats_array:
                     formats_array.append(data)
     formats_array.append(thumbnails[-1])
