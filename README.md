@@ -15,5 +15,4 @@
 }
 ```
 
-![architecture](architecture.png)
-
+![Screenshot](architecture.png)
