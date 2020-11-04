@@ -13,6 +13,7 @@
 	"gpu": "false",
 	"transmux": "true"
 }
+```
 
 ![architecture](architecture.png)
 
