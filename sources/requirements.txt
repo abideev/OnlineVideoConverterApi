@@ -1,0 +1,9 @@
+flask~=1.1.1
+pika~=1.1.0
+youtube_dl
+flask-restplus
+flask-swagger-ui
+redis~=3.4.1
+Werkzeug~=1.0.0
+boto3~=1.16.9
+botocore~=1.19.9

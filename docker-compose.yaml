@@ -4,8 +4,8 @@ services:
     image: rabbitmq:3.7.5-management
     hostname: app-rabbitmq
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@app-rabbitmq:cached
     environment:
@@ -18,7 +18,7 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - 6379:6379
+      - "6379:6379"
   redis-commander:
     container_name: redis-commander
     hostname: redis-commander
@@ -27,13 +27,37 @@ services:
     environment:
       - REDIS_HOSTS=127.0.0.1:redis:6379
     ports:
-    - "8282:8081"
-  ffmpeg:
+    - "8081:8081"
+  producer-api:
     build: .
-    volumes:
-      - nvidia_driver_375.20:/usr/local/nvidia:ro
-    devices:
-      - /dev/nvidiactl
-      - /dev/nvidia-uvm
-      - /dev/nvidia-uvm-tools
-      - /dev/nvidia0
+    privileged: true
+    restart: always
+    ports:
+    - "8080:8080"
+    command: ["/opt/rh/rh-python38/root/usr/bin/python3", "sources/app/services/producer.py"]
+    environment:
+      - aps=producer.py
+      - NVIDIA_VISIBLE_DEVICES=all
+      - redis_host=192.168.8.12
+      - rabbit_host=192.168.8.12
+      - ACCESS_KEY=123
+      - SECRET_KEY=123
+      - email_login=email@example.com
+      - email_password=SuperPassword
+      - email_sender=email@example.com
+  handler-api:
+    build: .
+    privileged: true
+    restart: always
+    command: ["/opt/rh/rh-python38/root/usr/bin/python3", "sources/app/services/handler.py"]
+    environment:
+      - PYTHONPATH=/app/sources:$PYTHONPATH
+      - aps=handler.py
+      - NVIDIA_VISIBLE_DEVICES=all
+      - redis_host=192.168.8.12
+      - rabbit_host=192.168.8.12
+      - ACCESS_KEY=123
+      - SECRET_KEY=123
+      - email_login=email@example.com
+      - email_password=SuperPassword
+      - email_sender=email@example.com

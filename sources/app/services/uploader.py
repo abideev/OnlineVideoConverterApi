@@ -1,22 +1,26 @@
 import shutil
 import boto3
+import os
 from botocore.exceptions import NoCredentialsError
 
-ACCESS_KEY = 'XXXXXXXXXXXXXXXXXXXXXXX'
-SECRET_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
+def uploader_file(filename,title):
+    # abs_path_ytdl = os.path.dirname(os.path.abspath(__file__))
+    # path_download = os.path.join(abs_path_ytdl, "..", "data")
+    # src = rf'{path_download}/{filename}'
+    # outdir = rf'/download/{filename}'
+    # shutil.move(src, outdir)
+    # dst_url = (filename)
+    ##
+    abs_path_ytdl = os.path.dirname(os.path.abspath(__file__))
+    path_download = os.path.join(abs_path_ytdl, "..", "data")
+    dst_url=rf'{path_download}/{filename}'
+    return (dst_url,title)
 
-def uploader_file(filename):
-    src = rf'C:\Users\ph03n1x\Documents\Downloads\{filename}'
-    outdir = rf'C:\Users\ph03n1x\Documents\123\{filename}'
-    shutil.move(src, outdir)
-    dst_url = (filename)
-    return dst_url
-
-
+##TODO
 def upload_to_aws(local_file, bucket, s3_file):
-    s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-                      aws_secret_access_key=SECRET_KEY)
+    s3 = boto3.client('s3', aws_access_key_id=os.getenv("ACCESS_KEY"),
+                      aws_secret_access_key=os.getenv("SECRET_KEY"))
 
     try:
         s3.upload_file(local_file, bucket, s3_file)
@@ -29,4 +33,5 @@ def upload_to_aws(local_file, bucket, s3_file):
         print("Credentials not available")
         return False
 
-# uploaded = upload_to_aws('local_file', 'bucket_name', 's3_file_name')
+
+#uploaded = upload_to_aws('local_file', 'bucket_name', 's3_file_name')

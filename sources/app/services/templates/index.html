@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>form test </title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+	select {
+    display: block;
+    width: 10%;
+    height: 25px;
+    margin: 0px 0px 0 0px;
+    box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+    <script type="text/javascript" language="javascript">
+        function downloaded() {
+
+            var sendInfo = {
+                   "url": "https://www.youtube.com/watch?v=v3mc5WovA5o&ab_channel=%D0%A2%D0%B5%D0%BB%D0%B5%D0%BA%D0%B0%D0%BD%D0%B0%D0%BB%D0%A2%D0%9D%D0%A2",
+                   "email": "",
+                   "download": "false",
+                   "convert": "true",
+                   "format": "mkv",
+                   "size": "720p",
+                   "bitrate": "normal"
+
+            };
+            $.ajax({
+                type: 'post',
+                url: '/api/v1/url-converter',
+                cache: false,
+                dataType: "json",
+                timeout:3000,
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(sendInfo),
+                success: function(response) {
+                    ObjToJson = JSON.stringify(response)
+                    jsn = JSON.parse(ObjToJson);
+                    checkstatus(jsn.id);
+                },
+                error:  function(data){
+                    console.log('!!!!!!!!!!!!!error');
+                }
+            });
+        }
+
+        function call() {
+            var url = $('#url').val();
+
+
+            var sendInfo = {
+                   "url": url,
+                   "email": "",
+                   "download": "false",
+                   "convert": "false",
+                   "format": "mkv",
+                   "size": "720p",
+                   "bitrate": "normal"
+
+            };
+            $.ajax({
+                type: 'post',
+                url: '/api/v1/url-converter',
+                cache: false,
+                dataType: "json",
+                timeout:3000,
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(sendInfo),
+                success: function(response) {
+                    ObjToJson = JSON.stringify(response)
+                    jsn = JSON.parse(ObjToJson);
+                    progress(jsn.id);
+                },
+                error:  function(data){
+                    console.log('error');
+                }
+            });
+        }
+
+        function progress(data) {
+        	 intervalId = setInterval(function() {
+             var status = $.ajax({
+					type: 'get',
+					url: '/api/v1/' + data,
+					dataType:'json',
+					timeout:2000,
+					success: function(data) {
+						data = JSON.parse(data);
+						var listResolution= "";
+						var listTumbr= "";
+						for(var id in data){
+							if (typeof  data[id].url === 'undefined') {
+								listResolution+= "<option value='" + data[id].format + "'>" + data[id].format + " " +  data[id].extension + "</option>";
+							}
+							else {
+								listTumbr+= "<img width='50%' height='40%' src='" + data[id].url  + "'/>" ;
+							}
+							document.getElementById('listSub').style.display = 'block';
+
+						}
+						clearInterval(intervalId);
+						$("#listResolution").html(listResolution);
+						$("#listTumbr").html(listTumbr);
+					},
+					error:  function(data){
+						console.log("data err");
+					}
+            });
+			},2000);
+        }
+
+        function checkstatus(data) {
+       		 intervalId = '5'
+        	 intervalId = setInterval(function() {
+             var status = $.ajax({
+					type: 'get',
+					url: '/api/v1/' + data,
+					dataType:'json',
+					timeout:2000,
+					success: function(data) {
+						data = JSON.parse(data);
+						for(var id in data){
+							console.log(data[id])
+							$('#div-to-refresh').html(data[id]);
+
+						}
+
+					},
+					error:  function(data){
+						clearInterval(intervalId);
+					}
+            });
+			},2000);
+        }
+
+
+
+    </script>
+	<form method="POST" id="formx" action="javascript:void(null);" onsubmit="call()">
+	    <input id="url" name="url" value="" type="text">
+	    <input value="Check video" type="submit">
+	</form>
+
+	<div id="results">
+      	<select id="listResolution"></select></br>
+		<div id="listTumbr" ></div>
+		<div id="listSub" style="display:none">
+			<form method="POST" id="forms" action="javascript:void(null);" onsubmit="downloaded()">
+				<input value="Check s" type="submit">
+			</form>
+			<div id="div-to-refresh">
+			<p> </p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
