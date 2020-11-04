@@ -1,6 +1,6 @@
 # OnlineVideoConverter
-json
 
+**json**
 ```
 {
 	"url": "https://example.com",
@@ -13,3 +13,6 @@ json
 	"gpu": "false",
 	"transmux": "true"
 }
+
+![architecture](architecture.png)
+
