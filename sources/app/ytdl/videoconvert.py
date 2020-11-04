@@ -56,7 +56,7 @@ def ffmpeg_transcode(srcfile, dstfile, format, frame, bitrate, id, gpu,transmux)
             ffmpegcmd += dstfile
         elif gpu == "false" and transmux == "true":
             ffmpegcmd = "ffmpeg -i " + srcfile + " "
-            ffmpegcmd += "-c:v copy -ab 128 -b 1024 "
+            ffmpegcmd += "-c:v copy -ab 128k -b 1024 "
             ffmpegcmd += dstfile + " -y"
     except Exception:
         return sent_message(str("error ffmpeg"), id)
