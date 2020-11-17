@@ -15,4 +15,4 @@
 }
 ```
 
-![Screenshot](architecture.png)
+![Screenshot](https://raw.githubusercontent.com/abideev/OnlineVideoConverter/main/architecture.PNG)
